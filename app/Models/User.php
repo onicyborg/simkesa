@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\UsesUuid;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,17 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    /**
+     * Dynamic URL for profile photo based on stored relative path.
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (!empty($this->profile_photo_path)) {
+            return Storage::disk('public')->url($this->profile_photo_path);
+        }
+        return null;
+    }
 
     /**
      * Relasi ke data siswa (kalau user ini role=student).

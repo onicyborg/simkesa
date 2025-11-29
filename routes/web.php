@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BatchController;
+use App\Http\Controllers\SchoolClassController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\NotificationLogController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +22,43 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'role:admin'], function () {
+Route::middleware('guest')->group(function () {
+    Route::get('login', function () {
+        return view('login');
+    })->name('login');
+    Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
+});
 
+// routes for user with auth
+Route::group(['middleware' => 'auth'], function () {
+    // Dashboard
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Profile routes used by profile.blade.php
+    Route::get('/profile', [AuthController::class, 'profileShow'])->name('profile.show');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/photo', [AuthController::class, 'updateProfilePhoto'])->name('profile.photo');
+    Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('profile.change_password');
+
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// Admin only routes
+Route::group(['middleware' => ['auth','role:admin']], function () {
+    Route::resource('batches', BatchController::class)->except(['show']);
+    Route::resource('classes', SchoolClassController::class)->except(['show']);
+    Route::resource('teachers', TeacherController::class)->except(['show']);
+    Route::resource('students', StudentController::class)->except(['show']);
+    Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+
+    // Reports
+    Route::get('/reports/attendance', [ReportController::class, 'attendance'])->name('reports.attendance');
+    Route::get('/reports/attendance/export-excel', [ReportController::class, 'exportExcel'])->name('reports.attendance.export_excel');
+    Route::get('/reports/attendance/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.attendance.export_pdf');
+
+    // Notification Logs
+    Route::get('/notification-logs', [NotificationLogController::class, 'index'])->name('notification_logs.index');
+    Route::get('/notification-logs/{id}', [NotificationLogController::class, 'show'])->name('notification_logs.show');
 });
 
 Route::group(['middleware' => 'role:guru'], function () {

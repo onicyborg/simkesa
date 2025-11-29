@@ -16,6 +16,8 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
     <!-- Vendor Stylesheets (optional, bisa dipakai untuk datatables, calendar dll) -->
     <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
@@ -74,12 +76,8 @@
 
                     <!--begin::Sidebar mobile toggle-->
                     <div class="d-flex align-items-center d-lg-none ms-n3 me-1 me-md-2" title="Tampilkan menu">
-                        <div class="btn btn-icon btn-active-color-primary w-35px h-35px"
-                            id="kt_app_sidebar_mobile_toggle">
-                            <i class="ki-duotone ki-abstract-14 fs-1">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
+                        <div class="btn btn-icon btn-active-color-primary w-35px h-35px" id="kt_app_sidebar_mobile_toggle">
+                            <i class="bi bi-list fs-1"></i>
                         </div>
                     </div>
                     <!--end::Sidebar mobile toggle-->
