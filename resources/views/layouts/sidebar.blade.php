@@ -174,8 +174,8 @@
 
                     <!-- Laporan Kehadiran (opsional untuk guru) -->
                     <div class="menu-item">
-                        <a class="menu-link {{ request()->routeIs('reports.attendance') ? 'active' : '' }}"
-                            href="{{ route('teacher.attendances.index') }}">
+                        <a class="menu-link {{ request()->routeIs('teacher.reports.attendance') ? 'active' : '' }}"
+                            href="{{ route('teacher.reports.attendance') }}">
                             <span class="menu-icon">
                                 <i class="bi bi-graph-up fs-2"></i>
                             </span>

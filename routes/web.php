@@ -7,6 +7,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TeacherReportController;
 use App\Http\Controllers\NotificationLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeacherAttendanceController;
@@ -76,6 +77,10 @@ Route::group(['middleware' => ['auth','role:teacher']], function () {
         Route::get('/{class}/date/{date}', [TeacherAttendanceController::class, 'showByDate'])->name('by_date');
         Route::post('/{class}/date/{date}/store', [TeacherAttendanceController::class, 'storeOrUpdate'])->name('store');
     });
+
+    // Teacher Reports
+    Route::get('/teacher/reports/attendance', [TeacherReportController::class, 'attendance'])->name('teacher.reports.attendance');
+    Route::get('/teacher/reports/attendance/export-excel', [TeacherReportController::class, 'exportExcel'])->name('teacher.reports.attendance.export_excel');
 });
 
 Route::group(['middleware' => ['auth','role:student']], function () {
