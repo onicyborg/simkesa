@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('login');
+Route::group(['middleware' => 'role:admin'], function () {
+
+});
+
+Route::group(['middleware' => 'role:guru'], function () {
+
+});
+
+Route::group(['middleware' => 'role:siswa'], function () {
+
 });
