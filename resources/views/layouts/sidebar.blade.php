@@ -151,7 +151,7 @@
 
                     <!-- Input Kehadiran -->
                     <div class="menu-item">
-                        <a class="menu-link {{ request()->routeIs('attendances.create') ? 'active' : '' }}"
+                        <a class="menu-link {{ request()->routeIs('teacher.attendances.*') && !request()->routeIs('teacher.attendances.index') ? 'active' : '' }}"
                             href="{{ route('teacher.attendances.classes') }}">
                             <span class="menu-icon">
                                 <i class="bi bi-pencil-square fs-2"></i>
@@ -160,10 +160,11 @@
                         </a>
                     </div>
 
+
                     <!-- Riwayat Kehadiran -->
                     <div class="menu-item">
-                        <a class="menu-link {{ request()->routeIs('attendances.index') ? 'active' : '' }}"
-                            href="">
+                        <a class="menu-link {{ request()->routeIs('teacher.attendances.index') ? 'active' : '' }}"
+                            href="{{ route('teacher.attendances.index') }}">
                             <span class="menu-icon">
                                 <i class="bi bi-clock fs-2"></i>
                             </span>
@@ -174,7 +175,7 @@
                     <!-- Laporan Kehadiran (opsional untuk guru) -->
                     <div class="menu-item">
                         <a class="menu-link {{ request()->routeIs('reports.attendance') ? 'active' : '' }}"
-                            href="">
+                            href="{{ route('teacher.attendances.index') }}">
                             <span class="menu-icon">
                                 <i class="bi bi-graph-up fs-2"></i>
                             </span>

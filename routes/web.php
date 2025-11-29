@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\NotificationLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeacherAttendanceController;
+use App\Http\Controllers\TeacherAttendanceHistoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,6 +69,7 @@ Route::group(['middleware' => ['auth','role:teacher']], function () {
 
     // Flow Input Kehadiran Siswa (3 tahap)
     Route::prefix('teacher/attendances')->name('teacher.attendances.')->group(function () {
+        Route::get('/', [TeacherAttendanceHistoryController::class, 'index'])->name('index');
         Route::get('/classes', [TeacherAttendanceController::class, 'indexClasses'])->name('classes');
         Route::get('/{class}/calendar', [TeacherAttendanceController::class, 'showCalendar'])->name('calendar');
         Route::get('/{class}/calendar/status', [TeacherAttendanceController::class, 'calendarStatus'])->name('calendar_status');

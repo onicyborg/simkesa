@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="container-xxl">
     <div class="d-flex align-items-center justify-content-between mb-6">
         <h2 class="mb-0">Pilih Kelas - Input Kehadiran</h2>
     </div>
@@ -35,5 +34,4 @@
             </div>
         @endforelse
     </div>
-</div>
 @endsection
