@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
     <h3 class="fw-bold mb-0">Laporan Kehadiran</h3>
-</div>
+    </div>
 
 <div class="card mb-6">
     <div class="card-body">
@@ -160,7 +160,6 @@
                 if(!b){ return; }
                 $(this).toggle(!batchId || String(b) === String(batchId));
             });
-            // If selected option hidden, reset to empty
             if($class.find('option:selected').is(':hidden')){
                 $class.val('');
             }
@@ -176,5 +175,6 @@
             }
         });
     });
-</script>
+    </script>
 @endpush
+

@@ -9,6 +9,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\NotificationLogController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TeacherAttendanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', function () {
-        return view('login');
+        return view('auth.login');
     })->name('login');
     Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
 });
@@ -61,10 +62,20 @@ Route::group(['middleware' => ['auth','role:admin']], function () {
     Route::get('/notification-logs/{id}', [NotificationLogController::class, 'show'])->name('notification_logs.show');
 });
 
-Route::group(['middleware' => 'role:guru'], function () {
+Route::group(['middleware' => ['auth','role:teacher']], function () {
+    // CTA dari dashboard guru
+    Route::get('/attendances/create', [AttendanceController::class, 'create'])->name('attendances.create');
 
+    // Flow Input Kehadiran Siswa (3 tahap)
+    Route::prefix('teacher/attendances')->name('teacher.attendances.')->group(function () {
+        Route::get('/classes', [TeacherAttendanceController::class, 'indexClasses'])->name('classes');
+        Route::get('/{class}/calendar', [TeacherAttendanceController::class, 'showCalendar'])->name('calendar');
+        Route::get('/{class}/calendar/status', [TeacherAttendanceController::class, 'calendarStatus'])->name('calendar_status');
+        Route::get('/{class}/date/{date}', [TeacherAttendanceController::class, 'showByDate'])->name('by_date');
+        Route::post('/{class}/date/{date}/store', [TeacherAttendanceController::class, 'storeOrUpdate'])->name('store');
+    });
 });
 
-Route::group(['middleware' => 'role:siswa'], function () {
-
+Route::group(['middleware' => ['auth','role:student']], function () {
+    // Tambahkan route khusus siswa jika diperlukan
 });

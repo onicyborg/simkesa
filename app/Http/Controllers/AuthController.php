@@ -49,7 +49,7 @@ class AuthController extends Controller
     public function profileShow()
     {
         $user = Auth::user();
-        return view('profile', compact('user'));
+        return view('profile.index', compact('user'));
     }
 
     /**

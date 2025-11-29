@@ -20,7 +20,7 @@ class TeacherController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('teachers.index', compact('teachers'));
+        return view('admin.teachers.index', compact('teachers'));
     }
 
     /**

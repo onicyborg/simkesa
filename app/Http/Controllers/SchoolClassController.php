@@ -21,7 +21,7 @@ class SchoolClassController extends Controller
         $batches = Batch::orderByDesc('year')->orderBy('name')->get();
         $teachers = User::where('role', 'teacher')->orderBy('name')->get();
 
-        return view('classes.index', compact('classes', 'batches', 'teachers'));
+        return view('admin.classes.index', compact('classes', 'batches', 'teachers'));
     }
 
     /**

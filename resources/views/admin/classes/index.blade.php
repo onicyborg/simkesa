@@ -1,44 +1,47 @@
 @extends('layouts.master')
 
-@section('page_title', 'Angkatan')
+@section('page_title', 'Kelas')
 
 @section('content')
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
-        <h3 class="fw-bold mb-0">Data Angkatan</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#batchModal" id="btnAddBatch">
-            <i class="bi bi-plus-lg me-2"></i>Tambah Angkatan
+        <h3 class="fw-bold mb-0">Data Kelas</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#classModal" id="btnAddClass">
+            <i class="bi bi-plus-lg me-2"></i>Tambah Kelas
         </button>
     </div>
 
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table align-middle table-row-dashed fs-6 gy-5" id="batches_table">
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="classes_table">
                     <thead>
                     <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                         <th class="w-50px">No</th>
-                        <th>Nama Angkatan</th>
-                        <th class="w-100px">Tahun</th>
+                        <th>Nama Kelas</th>
+                        <th>Angkatan</th>
+                        <th>Wali Kelas</th>
                         <th class="text-end w-150px">Aksi</th>
                     </tr>
                     </thead>
                     <tbody class="text-gray-700 fw-semibold">
-                    @foreach($batches as $i => $batch)
+                    @foreach($classes as $i => $class)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $batch->name }}</td>
-                            <td>{{ $batch->year }}</td>
+                            <td>{{ $class->name }}</td>
+                            <td>{{ $class->batch->name ?? '-' }}</td>
+                            <td>{{ $class->homeroomTeacher->name ?? '-' }}</td>
                             <td class="text-end">
                                 <button class="btn btn-light-primary btn-sm me-2 btn-edit"
-                                        data-id="{{ $batch->id }}"
-                                        data-name="{{ $batch->name }}"
-                                        data-year="{{ $batch->year }}"
-                                        data-bs-toggle="modal" data-bs-target="#batchModal">
+                                        data-id="{{ $class->id }}"
+                                        data-name="{{ $class->name }}"
+                                        data-batch_id="{{ $class->batch_id }}"
+                                        data-homeroom_teacher_id="{{ $class->homeroom_teacher_id }}"
+                                        data-bs-toggle="modal" data-bs-target="#classModal">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <button class="btn btn-light-danger btn-sm btn-delete"
-                                        data-id="{{ $batch->id }}"
-                                        data-name="{{ $batch->name }}"
+                                        data-id="{{ $class->id }}"
+                                        data-name="{{ $class->name }}"
                                         data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -52,32 +55,46 @@
     </div>
 
     <!-- Create/Edit Modal -->
-    <div class="modal fade" id="batchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="classModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="batchForm" method="POST" action="{{ route('batches.store') }}">
+                <form id="classForm" method="POST" action="{{ route('classes.store') }}">
                     @csrf
-                    <input type="hidden" name="_method" id="batchFormMethod" value="POST">
-                    <input type="hidden" name="id" id="batch_id">
+                    <input type="hidden" name="_method" id="classFormMethod" value="POST">
+                    <input type="hidden" name="id" id="class_id">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="batchModalTitle">Tambah Angkatan</h5>
+                        <h5 class="modal-title" id="classModalTitle">Tambah Kelas</h5>
                         <button type="button" class="btn btn-sm btn-icon" data-bs-dismiss="modal" aria-label="Close">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-5">
-                            <label class="form-label">Nama Angkatan</label>
-                            <input type="text" class="form-control" name="name" id="batch_name" required maxlength="50">
+                            <label class="form-label">Nama Kelas</label>
+                            <input type="text" class="form-control" name="name" id="class_name" required maxlength="50">
                         </div>
                         <div class="mb-5">
-                            <label class="form-label">Tahun</label>
-                            <input type="number" class="form-control" name="year" id="batch_year" required min="1900" max="3000">
+                            <label class="form-label">Angkatan</label>
+                            <select class="form-select" name="batch_id" id="class_batch_id" required>
+                                <option value="" disabled selected>Pilih Angkatan</option>
+                                @foreach($batches as $b)
+                                    <option value="{{ $b->id }}">{{ $b->name }} ({{ $b->year }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-5">
+                            <label class="form-label">Wali Kelas</label>
+                            <select class="form-select" name="homeroom_teacher_id" id="class_homeroom_teacher_id">
+                                <option value="" selected>Tidak ada</option>
+                                @foreach($teachers as $t)
+                                    <option value="{{ $t->id }}">{{ $t->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary" id="btnSaveBatch">Simpan</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveClass">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -92,13 +109,13 @@
                     @csrf
                     @method('DELETE')
                     <div class="modal-header">
-                        <h5 class="modal-title">Hapus Angkatan</h5>
+                        <h5 class="modal-title">Hapus Kelas</h5>
                         <button type="button" class="btn btn-sm btn-icon" data-bs-dismiss="modal" aria-label="Close">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Yakin ingin menghapus angkatan <strong id="delete_name">-</strong>?</p>
+                        <p>Yakin ingin menghapus kelas <strong id="delete_name">-</strong>?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
@@ -112,60 +129,57 @@
 
 @push('scripts')
 <script>
-    // Init DataTable (Metronic style still works with default DataTables init)
     $(document).ready(function() {
-        $('#batches_table').DataTable({
+        $('#classes_table').DataTable({
             pageLength: 10,
             ordering: true,
-            language: {
-                url: '' // gunakan default; dapat diisi URL bahasa jika perlu
-            }
         });
     });
 
-    const batchModal = document.getElementById('batchModal');
-    const btnAdd = document.getElementById('btnAddBatch');
-    const form = document.getElementById('batchForm');
-    const formMethod = document.getElementById('batchFormMethod');
-    const inputId = document.getElementById('batch_id');
-    const inputName = document.getElementById('batch_name');
-    const inputYear = document.getElementById('batch_year');
-    const title = document.getElementById('batchModalTitle');
+    const classModal = document.getElementById('classModal');
+    const btnAdd = document.getElementById('btnAddClass');
+    const form = document.getElementById('classForm');
+    const formMethod = document.getElementById('classFormMethod');
+    const inputId = document.getElementById('class_id');
+    const inputName = document.getElementById('class_name');
+    const selectBatch = document.getElementById('class_batch_id');
+    const selectTeacher = document.getElementById('class_homeroom_teacher_id');
+    const title = document.getElementById('classModalTitle');
 
-    // Reset to create mode
     btnAdd?.addEventListener('click', () => {
-        form.action = '{{ route('batches.store') }}';
+        form.action = '{{ route('classes.store') }}';
         formMethod.value = 'POST';
         inputId.value = '';
         inputName.value = '';
-        inputYear.value = '';
-        title.textContent = 'Tambah Angkatan';
+        selectBatch.value = '';
+        selectTeacher.value = '';
+        title.textContent = 'Tambah Kelas';
     });
 
-    // Edit buttons
     document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
             const name = btn.getAttribute('data-name');
-            const year = btn.getAttribute('data-year');
+            const batch_id = btn.getAttribute('data-batch_id');
+            const homeroom_teacher_id = btn.getAttribute('data-homeroom_teacher_id');
 
-            form.action = '{{ url('batches') }}/' + id;
+            form.action = '{{ url('classes') }}/' + id;
             formMethod.value = 'PUT';
             inputId.value = id;
             inputName.value = name;
-            inputYear.value = year;
-            title.textContent = 'Edit Angkatan';
+            selectBatch.value = batch_id;
+            selectTeacher.value = homeroom_teacher_id || '';
+            title.textContent = 'Edit Kelas';
         });
     });
 
-    // Delete buttons
     const deleteForm = document.getElementById('deleteForm');
     const deleteName = document.getElementById('delete_name');
     document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
             const name = btn.getAttribute('data-name');
-            deleteForm.action = '{{ url('batches') }}/' + id;
+            deleteForm.action = '{{ url('classes') }}/' + id;
             deleteName.textContent = name;
         });
     });
@@ -202,3 +216,4 @@
  </script>
 @endif
 @endpush
+

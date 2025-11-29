@@ -45,7 +45,7 @@ class NotificationLogController extends Controller
         // Classes for filter
         $classes = SchoolClass::with('batch')->orderBy('name')->get();
 
-        return view('notification_logs.index', [
+        return view('admin.notification_logs.index', [
             'logs' => $logs,
             'classes' => $classes,
             'filters' => [

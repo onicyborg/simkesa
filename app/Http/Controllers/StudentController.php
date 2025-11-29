@@ -18,7 +18,7 @@ class StudentController extends Controller
     {
         $students = Student::with(['schoolClass.batch', 'user'])->orderBy('full_name')->get();
         $classes = SchoolClass::with('batch')->orderByDesc('created_at')->get();
-        return view('students.index', compact('students', 'classes'));
+        return view('admin.students.index', compact('students', 'classes'));
     }
 
     /**

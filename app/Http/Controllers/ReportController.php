@@ -99,7 +99,7 @@ class ReportController extends Controller
         $batches = Batch::orderBy('year', 'desc')->get();
         $classes = SchoolClass::with('batch')->orderBy('name')->get();
 
-        return view('reports.attendance', [
+        return view('admin.reports.attendance', [
             'filters' => [
                 'date_from' => $dateFrom,
                 'date_to' => $dateTo,

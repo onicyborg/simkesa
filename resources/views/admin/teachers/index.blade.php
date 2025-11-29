@@ -177,7 +177,6 @@
         inputPassword.required = true;
         inputPassword.value = '';
         title.textContent = 'Tambah Guru';
-        // reset photo preview
         if (photoWrapper) photoWrapper.style.backgroundImage = `url('${defaultAvatar}')`;
         if (photoInput) photoInput.value = '';
     });
@@ -197,13 +196,11 @@
             inputPassword.required = false;
             inputPassword.value = '';
             title.textContent = 'Edit Guru';
-            // set photo preview
             if (photoWrapper) photoWrapper.style.backgroundImage = `url('${photo || defaultAvatar}')`;
             if (photoInput) photoInput.value = '';
         });
     });
 
-    // Preview selected photo
     photoInput?.addEventListener('change', function(){
         const f = photoInput.files && photoInput.files[0];
         if (!f) return;
@@ -257,3 +254,4 @@
  </script>
 @endif
 @endpush
+

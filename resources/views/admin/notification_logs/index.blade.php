@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
     <h3 class="fw-bold mb-0">Log Notifikasi</h3>
-</div>
+    </div>
 
 <div class="card mb-6">
     <div class="card-body">
@@ -50,7 +50,7 @@
     <span class="badge bg-secondary">Total: {{ $t }}</span>
     <span class="badge bg-success">Berhasil: {{ $s }}</span>
     <span class="badge bg-danger">Gagal: {{ $f }}</span>
-</div>
+    </div>
 
 <div class="card">
     <div class="card-body">
@@ -151,3 +151,4 @@
     });
 </script>
 @endpush
+

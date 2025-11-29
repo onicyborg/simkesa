@@ -13,7 +13,7 @@ class BatchController extends Controller
     public function index()
     {
         $batches = Batch::orderByDesc('year')->orderBy('name')->get();
-        return view('batches.index', compact('batches'));
+        return view('admin.batches.index', compact('batches'));
     }
 
     /**

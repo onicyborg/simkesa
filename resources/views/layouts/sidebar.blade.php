@@ -152,7 +152,7 @@
                     <!-- Input Kehadiran -->
                     <div class="menu-item">
                         <a class="menu-link {{ request()->routeIs('attendances.create') ? 'active' : '' }}"
-                            href="">
+                            href="{{ route('teacher.attendances.classes') }}">
                             <span class="menu-icon">
                                 <i class="bi bi-pencil-square fs-2"></i>
                             </span>

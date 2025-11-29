@@ -61,7 +61,7 @@ class AttendanceController extends Controller
         $classes = SchoolClass::with('batch')->orderBy('name')->get();
         $teachers = User::where('role', 'teacher')->orderBy('name')->get();
 
-        return view('attendances.index', [
+        return view('admin.attendances.index', [
             'attendances' => $attendances,
             'classes' => $classes,
             'teachers' => $teachers,
@@ -74,5 +74,13 @@ class AttendanceController extends Controller
             ],
             'summary' => $summary,
         ]);
+    }
+
+    /**
+     * Show create attendance form for teacher (placeholder).
+     */
+    public function create()
+    {
+        return redirect()->route('teacher.attendances.classes');
     }
 }
