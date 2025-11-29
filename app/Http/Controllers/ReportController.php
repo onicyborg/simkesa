@@ -8,6 +8,8 @@ use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AttendanceReportExport;
 
 class ReportController extends Controller
 {
@@ -72,7 +74,7 @@ class ReportController extends Controller
             ->get();
 
         $studentIds = $aggregates->pluck('student_id')->filter()->unique()->values();
-        $students = Student::with(['schoolClass.batch'])
+        $students = Student::with(['schoolClass.batch','schoolClass.homeroomTeacher'])
             ->whereIn('id', $studentIds)
             ->get()
             ->keyBy('id');
@@ -147,41 +149,39 @@ class ReportController extends Controller
             ->get();
 
         $studentIds = $aggregates->pluck('student_id')->filter()->unique()->values();
-        $students = Student::with(['schoolClass.batch'])
+        $students = Student::with(['schoolClass.batch','schoolClass.homeroomTeacher'])
             ->whereIn('id', $studentIds)
             ->get()
             ->keyBy('id');
 
-        $handle = fopen('php://temp', 'r+');
-        // Header
-        fputcsv($handle, ['Nama Siswa','Kelas','Hadir','Sakit','Izin','Alpha','Total','% Kehadiran']);
+        // Build rows for export (with Wali Kelas)
+        $rows = [];
         foreach ($aggregates as $agg) {
             $student = $students->get($agg->student_id);
             $kelas = '-';
             if ($student && $student->schoolClass) {
                 $kelas = ($student->schoolClass->batch->year ?? '-') . ' - ' . ($student->schoolClass->name ?? '-');
             }
+            $wali = '-';
+            if ($student && $student->schoolClass && $student->schoolClass->homeroomTeacher) {
+                $wali = $student->schoolClass->homeroomTeacher->name ?? '-';
+            }
             $percent = $agg->total > 0 ? round(($agg->hadir / $agg->total) * 100, 2) : 0;
-            fputcsv($handle, [
-                $student->full_name ?? '-',
-                $kelas,
-                (int) $agg->hadir,
-                (int) $agg->sakit,
-                (int) $agg->izin,
-                (int) $agg->alpha,
-                (int) $agg->total,
-                $percent,
-            ]);
+            $rows[] = [
+                'student_name' => $student->full_name ?? '-',
+                'class_label' => $kelas,
+                'homeroom'    => $wali,
+                'hadir'       => (int) $agg->hadir,
+                'sakit'       => (int) $agg->sakit,
+                'izin'        => (int) $agg->izin,
+                'alpha'       => (int) $agg->alpha,
+                'total'       => (int) $agg->total,
+                'percent'     => $percent,
+            ];
         }
-        rewind($handle);
-        $csv = stream_get_contents($handle);
-        fclose($handle);
 
-        $filename = 'laporan_kehadiran_' . now()->format('Ymd_His') . '.csv';
-        return response($csv, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+        $filename = 'laporan_kehadiran_' . now()->format('Ymd_His') . '.xlsx';
+        return Excel::download(new AttendanceReportExport($rows), $filename);
     }
 
     public function exportPdf(Request $request)

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\StudentAttendanceNotification;
 use App\Models\Attendance;
+use App\Models\NotificationLog;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class TeacherAttendanceController extends Controller
 {
@@ -121,6 +124,29 @@ class TeacherAttendanceController extends Controller
                 'recorded_by' => $user->id,
             ]
         );
+
+        if (strtoupper($attendance->status) !== null && $attendance->student?->parent_email) {
+            try {
+                Mail::to($attendance->student->parent_email)
+                    ->send(new StudentAttendanceNotification($attendance));
+
+                NotificationLog::create([
+                    'attendance_id'   => $attendance->id,
+                    'recipient_email' => $attendance->student->parent_email,
+                    'status'          => 'success',
+                    'error_message'   => null,
+                    'sent_at'         => now(),
+                ]);
+            } catch (\Throwable $e) {
+                NotificationLog::create([
+                    'attendance_id'   => $attendance->id,
+                    'recipient_email' => $attendance->student->parent_email,
+                    'status'          => 'failed',
+                    'error_message'   => $e->getMessage(),
+                    'sent_at'         => now(),
+                ]);
+            }
+        }
 
         return back()->with('success', 'Kehadiran disimpan.');
     }

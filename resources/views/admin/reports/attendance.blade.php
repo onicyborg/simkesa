@@ -113,7 +113,6 @@
             <h5 class="mb-0">Tabel Laporan</h5>
             <div class="d-flex gap-2">
                 <a class="btn btn-success" href="{{ route('reports.attendance.export_excel', request()->query()) }}"><i class="bi bi-file-earmark-excel me-2"></i>Export Excel</a>
-                <a class="btn btn-danger" href="{{ route('reports.attendance.export_pdf', request()->query()) }}"><i class="bi bi-file-earmark-pdf me-2"></i>Export PDF</a>
             </div>
         </div>
         <div class="table-responsive">

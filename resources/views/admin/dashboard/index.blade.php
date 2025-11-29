@@ -90,7 +90,15 @@
                                         @if($status === 'H') badge-success
                                         @elseif($status === 'A') badge-danger
                                         @else badge-warning @endif">
-                                        {{ $status }}
+                                        @if (strtoupper($status) === 'H')
+                                            Hadir
+                                        @elseif (strtoupper($status) === 'A')
+                                            Alpha
+                                        @elseif (strtoupper($status) === 'I')
+                                            Izin
+                                        @elseif (strtoupper($status) === 'S')
+                                            Sakit
+                                        @endif
                                     </span>
                                 </td>
                                 <td>{{ $attendance->recorder->name ?? '-' }}</td>
