@@ -79,7 +79,51 @@ class DashboardController extends Controller
             return view('admin.dashboard.index', compact('dashboard', 'recentAttendances'));
         }
         if ($role === 'student') {
-            return view('student.dashboard.index', compact('dashboard', 'recentAttendances'));
+            $user = Auth::user();
+            $student = Student::with(['schoolClass.batch', 'schoolClass.homeroomTeacher'])
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (!$student) {
+                return redirect()->route('dashboard')->with('error', 'Data siswa tidak ditemukan.');
+            }
+
+            $base = Attendance::query()
+                ->where('student_id', $student->id);
+
+            // Ringkasan
+            $total = (clone $base)->count();
+            $totalH = (clone $base)->where('status', 'H')->count();
+            $totalS = (clone $base)->where('status', 'S')->count();
+            $totalI = (clone $base)->where('status', 'I')->count();
+            $totalA = (clone $base)->where('status', 'A')->count();
+            $percent = $total > 0 ? round(($totalH / $total) * 100, 2) : 0;
+
+            // Riwayat terbaru
+            $recentAttendances = Attendance::query()
+                ->where('student_id', $student->id)
+                ->orderByDesc('attendance_date')
+                ->limit(10)
+                ->get();
+
+            // Info kelas
+            $classLabel = '-';
+            $homeroom = '-';
+            if ($student->schoolClass) {
+                $classLabel = ($student->schoolClass->batch->year ?? '-') . ' - ' . ($student->schoolClass->name ?? '-');
+                $homeroom = $student->schoolClass->homeroomTeacher->name ?? '-';
+            }
+
+            $summary = [
+                'H' => $totalH,
+                'S' => $totalS,
+                'I' => $totalI,
+                'A' => $totalA,
+                'total' => $total,
+                'percent' => $percent,
+            ];
+
+            return view('student.dashboard.index', compact('student', 'classLabel', 'homeroom', 'summary', 'recentAttendances'));
         }
 
         // Default fallback

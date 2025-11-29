@@ -12,6 +12,7 @@ use App\Http\Controllers\NotificationLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeacherAttendanceController;
 use App\Http\Controllers\TeacherAttendanceHistoryController;
+use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -84,5 +85,5 @@ Route::group(['middleware' => ['auth','role:teacher']], function () {
 });
 
 Route::group(['middleware' => ['auth','role:student']], function () {
-    // Tambahkan route khusus siswa jika diperlukan
+    Route::get('/student/attendances', [\App\Http\Controllers\StudentAttendanceController::class, 'index'])->name('student.attendances.index');
 });

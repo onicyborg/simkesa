@@ -198,8 +198,8 @@
 
                     <!-- Riwayat Kehadiran Siswa -->
                     <div class="menu-item">
-                        <a class="menu-link {{ request()->routeIs('attendances.index') || request()->routeIs('student.attendance') ? 'active' : '' }}"
-                            href="">
+                        <a class="menu-link {{ request()->routeIs('student.attendances.index') ? 'active' : '' }}"
+                            href="{{ route('student.attendances.index') }}">
                             <span class="menu-icon">
                                 <i class="bi bi-clock fs-2"></i>
                             </span>
