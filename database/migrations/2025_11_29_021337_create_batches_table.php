@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('batches', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+
+            $table->string('name', 50); // contoh: Angkatan 2023
+            $table->integer('year');    // contoh: 2023
+
             $table->timestamps();
         });
     }
