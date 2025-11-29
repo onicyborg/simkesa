@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('batches', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->string('name', 100);
-            $table->string('email', 100)->unique();
-            $table->string('password');
-            $table->string('role', 20); // 'admin', 'teacher', 'student'
+            $table->string('name', 50); // contoh: Angkatan 2023
+            $table->integer('year');    // contoh: 2023
 
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('batches');
     }
 };
