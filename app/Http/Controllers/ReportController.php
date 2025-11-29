@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
-use App\Models\Batch;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -17,7 +16,6 @@ class ReportController extends Controller
     {
         $dateFrom = $request->query('date_from');
         $dateTo = $request->query('date_to');
-        $batchId = $request->query('batch_id');
         $classId = $request->query('class_id');
         $status = $request->query('status');
 
@@ -32,10 +30,6 @@ class ReportController extends Controller
         if (!empty($classId)) {
             $base->whereHas('student', function ($q) use ($classId) {
                 $q->where('class_id', $classId);
-            });
-        } elseif (!empty($batchId)) {
-            $base->whereHas('student.schoolClass', function ($q) use ($batchId) {
-                $q->where('batch_id', $batchId);
             });
         }
         if (!empty($status)) {
@@ -97,19 +91,15 @@ class ReportController extends Controller
                 'percent' => $percent,
             ];
         });
-
-        $batches = Batch::orderBy('year', 'desc')->get();
         $classes = SchoolClass::with('batch')->orderBy('name')->get();
 
         return view('admin.reports.attendance', [
             'filters' => [
                 'date_from' => $dateFrom,
                 'date_to' => $dateTo,
-                'batch_id' => $batchId,
                 'class_id' => $classId,
                 'status' => $status,
             ],
-            'batches' => $batches,
             'classes' => $classes,
             'summary' => $summary,
             'rows' => $rows,
@@ -121,7 +111,6 @@ class ReportController extends Controller
         // Reuse the same filter logic
         $dateFrom = $request->query('date_from');
         $dateTo = $request->query('date_to');
-        $batchId = $request->query('batch_id');
         $classId = $request->query('class_id');
         $status = $request->query('status');
 
@@ -130,8 +119,6 @@ class ReportController extends Controller
         if (!empty($dateTo)) $base->whereDate('attendance_date', '<=', $dateTo);
         if (!empty($classId)) {
             $base->whereHas('student', fn($q)=>$q->where('class_id',$classId));
-        } elseif (!empty($batchId)) {
-            $base->whereHas('student.schoolClass', fn($q)=>$q->where('batch_id',$batchId));
         }
         if (!empty($status)) $base->where('status', $status);
 

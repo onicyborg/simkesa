@@ -19,18 +19,9 @@
                 <input type="date" name="date_to" value="{{ $filters['date_to'] ?? '' }}" class="form-control">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Angkatan</label>
-                <select name="batch_id" id="batch_id" class="form-select">
-                    <option value="">Semua Angkatan</option>
-                    @foreach($batches as $b)
-                        <option value="{{ $b->id }}" {{ ($filters['batch_id'] ?? '') == $b->id ? 'selected' : '' }}>{{ $b->year }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Kelas</label>
+                <label class="form-label">Kelas / Angkatan</label>
                 <select name="class_id" id="class_id" class="form-select">
-                    <option value="">Semua Kelas</option>
+                    <option value="">Semua Kelas / Angkatan</option>
                     @foreach($classes as $c)
                         <option value="{{ $c->id }}" data-batch="{{ $c->batch_id }}" {{ ($filters['class_id'] ?? '') == $c->id ? 'selected' : '' }}>
                             {{ $c->batch->year ?? '-' }} - {{ $c->name }}
@@ -150,22 +141,6 @@
 @push('scripts')
 <script>
     $(function(){
-        const $batch = $('#batch_id');
-        const $class = $('#class_id');
-        function filterClasses(){
-            const batchId = $batch.val();
-            $class.find('option').each(function(){
-                const b = $(this).data('batch');
-                if(!b){ return; }
-                $(this).toggle(!batchId || String(b) === String(batchId));
-            });
-            if($class.find('option:selected').is(':hidden')){
-                $class.val('');
-            }
-        }
-        $batch.on('change', filterClasses);
-        filterClasses();
-
         $('#report_attendance_table').DataTable({
             pageLength: 10,
             ordering: true,
