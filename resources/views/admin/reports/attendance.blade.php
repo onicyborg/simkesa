@@ -40,8 +40,8 @@
                 </select>
             </div>
             <div class="col-md-3 d-flex gap-3">
-                <button class="btn btn-primary" type="submit"><i class="bi bi-eye me-2"></i>Tampilkan Laporan</button>
-                <a href="{{ route('reports.attendance') }}" class="btn btn-light">Reset</a>
+                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-eye me-2"></i>Tampilkan Laporan</button>
+                <a href="{{ route('reports.attendance') }}" class="btn btn-light btn-sm">Reset</a>
             </div>
         </form>
     </div>
