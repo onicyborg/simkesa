@@ -235,6 +235,20 @@
         })();
     </script>
 
+    <script>
+        // Global: enforce smaller buttons across the app
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn').forEach(function (el) {
+                if (!el.classList.contains('btn-sm')) {
+                    el.classList.add('btn-sm');
+                }
+                if (el.classList.contains('btn-lg')) {
+                    el.classList.remove('btn-lg');
+                }
+            });
+        });
+    </script>
+
     @stack('scripts')
 </body>
 
