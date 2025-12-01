@@ -79,8 +79,18 @@
                                     <span class="badge
                                         @if($status === 'H') badge-success
                                         @elseif($status === 'A') badge-danger
-                                        @else badge-warning @endif">
-                                        {{ $status }}
+                                        @elseif($status === 'I') badge-warning
+                                        @elseif($status === 'S') badge-info @endif">
+
+                                        @if ($status === 'H')
+                                            Hadir
+                                        @elseif ($status === 'A')
+                                            Alpha
+                                        @elseif ($status === 'I')
+                                            Izin
+                                        @elseif ($status === 'S')
+                                            Sakit
+                                        @endif
                                     </span>
                                 </td>
                                 <td>{{ $attendance->remark ?? '-' }}</td>

@@ -140,6 +140,27 @@
                 {{-- ROLE: GURU (TEACHER)      --}}
                 {{-- ========================= --}}
                 @if ($role === 'teacher')
+
+                    <!-- MASTER DATA SECTION -->
+                    <div class="menu-item pt-5">
+                        <div class="menu-content">
+                            <span class="menu-section text-muted text-uppercase fs-8 ls-1">
+                                Master Data
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Siswa -->
+                    <div class="menu-item">
+                        <a class="menu-link {{ request()->routeIs('teacher.students.*') ? 'active' : '' }}"
+                            href="{{ route('teacher.students.index') }}">
+                            <span class="menu-icon">
+                                <i class="bi bi-person-circle fs-2"></i>
+                            </span>
+                            <span class="menu-title">Siswa</span>
+                        </a>
+                    </div>
+
                     <!-- KEHADIRAN -->
                     <div class="menu-item pt-5">
                         <div class="menu-content">

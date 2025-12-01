@@ -28,6 +28,9 @@
     <!-- Global Stylesheets Bundle -->
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        [data-bs-theme="light"] #kt_app_sidebar_logo .sidebar-title { color: #fff !important; }
+    </style>
 
     @stack('styles')
 </head>
@@ -96,6 +99,11 @@
 
                     <!--begin::Navbar-->
                     <div class="d-flex align-items-center flex-shrink-0">
+                        <div class="me-3">
+                            <button type="button" id="theme_toggle" class="btn btn-icon btn-light btn-active-light-primary w-35px h-35px" aria-label="Ubah tema">
+                                <i id="theme_toggle_icon" class="bi"></i>
+                            </button>
+                        </div>
                         @auth
                             <div class="d-flex align-items-center">
                                 <div class="d-none d-md-flex flex-column me-3">
@@ -145,7 +153,7 @@
                         <a href="{{ url('/') }}" class="d-flex align-items-center">
                             <img alt="Logo" src="{{ asset('assets/media/logos/default-small.svg') }}"
                                 class="h-25px app-sidebar-logo-default" />
-                            <span class="ms-3 fw-semibold text-gray-800 fs-6">SIMKESA</span>
+                            <span class="ms-3 fw-semibold text-gray-800 fs-6 sidebar-title">SIMKESA</span>
                         </a>
                     </div>
                     <!--end::Sidebar logo-->
@@ -195,6 +203,37 @@
     <!-- Vendor (optional) -->
     <script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script>
+        (function () {
+            function applyIcon(mode) {
+                var icon = document.getElementById('theme_toggle_icon');
+                if (!icon) return;
+                icon.className = 'bi ' + (mode === 'dark' ? 'bi-moon' : 'bi-sun');
+            }
+
+            function getMode() {
+                return document.documentElement.getAttribute('data-bs-theme') || 'light';
+            }
+
+            function setMode(mode) {
+                document.documentElement.setAttribute('data-bs-theme', mode);
+                try { localStorage.setItem('data-bs-theme', mode); } catch (e) {}
+                applyIcon(mode);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                applyIcon(getMode());
+                var btn = document.getElementById('theme_toggle');
+                if (btn) {
+                    btn.addEventListener('click', function () {
+                        var next = getMode() === 'dark' ? 'light' : 'dark';
+                        setMode(next);
+                    });
+                }
+            });
+        })();
+    </script>
 
     @stack('scripts')
 </body>

@@ -12,6 +12,7 @@ use App\Http\Controllers\NotificationLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TeacherAttendanceController;
 use App\Http\Controllers\TeacherAttendanceHistoryController;
+use App\Http\Controllers\TeacherStudentController;
 use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -82,6 +83,9 @@ Route::group(['middleware' => ['auth','role:teacher']], function () {
     // Teacher Reports
     Route::get('/teacher/reports/attendance', [TeacherReportController::class, 'attendance'])->name('teacher.reports.attendance');
     Route::get('/teacher/reports/attendance/export-excel', [TeacherReportController::class, 'exportExcel'])->name('teacher.reports.attendance.export_excel');
+
+    // Teacher Master Data Siswa (scoped to homeroom classes)
+    Route::resource('teacher/students', TeacherStudentController::class)->except(['show'])->names('teacher.students');
 });
 
 Route::group(['middleware' => ['auth','role:student']], function () {
